@@ -1,0 +1,2 @@
+# bfGameAccountOtp
+ver. ECMA script
