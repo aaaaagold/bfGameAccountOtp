@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+# Beanfun Game Account Otp ver. web
 
-You can use the [editor on GitHub](https://github.com/aaaaagold/bfGameAccountOtp/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+[source](https://aaaaagold.github.io/bfGameAccountOtp/main.js)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## How to use
 
-### Markdown
+### via browser's dev console
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+simply open dev console and paste it
 
-```markdown
-Syntax highlighted code block
+### via bookmark
 
-# Header 1
-## Header 2
-### Header 3
+add the code below
 
-- Bulleted
-- List
+javascript:document.head.appendChild((function(){ let t=document.createElement("script"); t.setAttribute("type","text/javascript"); t.setAttribute("src","https://aaaaagold.github.io/bfGameAccountOtp/main.js"); return t; })());
 
-1. Numbered
-2. List
+to bookmarks, if your browser support
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/aaaaagold/bfGameAccountOtp/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+// as mentioned in comment
