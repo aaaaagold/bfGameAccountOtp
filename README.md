@@ -4,7 +4,7 @@
 
 This is used when you're tired of bf plugin.
 
-The current version DO NOT support creating a game account, so suppose you already have one and you don't need a new account.
+The current version DOES NOT support creating a game account, so suppose you already have one and you don't need a new account.
 
 You'll still need to login via original web page.
 
