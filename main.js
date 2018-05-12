@@ -8,7 +8,9 @@
 * This script will send queries to get games you play, accounts of games. All information depends on what bf server says.
 * This script change the current web page to a simpler style, the top is to display the OTP.
 * 
-* need to paste on console
+* need to paste on console or,
+* you may add the following to bookmarks to trigger (make sure your domain @ tw.beanfun.com)
+* javascript:document.head.appendChild((function(){ let t=document.createElement("script"); t.setAttribute("type","text/javascript"); t.setAttribute("src","https://aaaaagold.github.io/bfGameAccountOtp/main.js"); return t; })());
 * 
 * usage flow:
  1. goto tw.beanfun.com on your web browser, and login
