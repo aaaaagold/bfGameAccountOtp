@@ -337,24 +337,28 @@ let getGameAccountLoginInfo=function(query_serial,svcCode,svcRegion,accName,accS
 			}
 		}
 		if(fail!=0) console.log(SN,WebToken,m_strSecretCode,CreateTime);
-		else jurl(hostAt+"beanfun_block/generic_handlers/get_webstart_otp.ashx"+
-				"?SN="+SN+
-				"&WebToken="+ WebToken +
-				"&SecretCode="+ m_strSecretCode +
-				"&ppppp=1F552AEAFF976018F942B13690C990F60ED01510DDF89165F1658CCE7BC21DBA"+
-				"&ServiceCode="+ svcCode +
-				"&ServiceRegion="+ svcRegion +
-				"&ServiceAccount="+ accName +
-				"&CreateTime="+ CreateTime ,
-			"GET","",function(txt){
-				if(txt.slice(0,1)!="1") console.log(txt);
-				else{
-					otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
-					otp.childNodes[1].ra(1).ac(q.ce("div").at("calculating ..."));
-					let otpCode=desDecrypt(txt.slice(2));
-					otp.childNodes[1].ra(1).ac(q.ce("div").at(otpCode));
-				}
-		});
+		else{
+			otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
+			otp.childNodes[1].ra(1).ac(q.ce("div").at("loading ... "));
+			jurl(hostAt+"beanfun_block/generic_handlers/get_webstart_otp.ashx"+
+					"?SN="+SN+
+					"&WebToken="+ WebToken +
+					"&SecretCode="+ m_strSecretCode +
+					"&ppppp=1F552AEAFF976018F942B13690C990F60ED01510DDF89165F1658CCE7BC21DBA"+
+					"&ServiceCode="+ svcCode +
+					"&ServiceRegion="+ svcRegion +
+					"&ServiceAccount="+ accName +
+					"&CreateTime="+ CreateTime ,
+				"GET","",function(txt){
+					if(txt.slice(0,1)!="1") console.log(txt);
+					else{
+						// otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
+						otp.childNodes[1].ra(1).ac(q.ce("div").at("calculating ..."));
+						let otpCode=desDecrypt(txt.slice(2));
+						otp.childNodes[1].ra(1).ac(q.ce("div").at(otpCode));
+					}
+			});
+		}
 	});
 
 };
