@@ -308,6 +308,8 @@ let desDecrypt=function(s){
 	return rtv;
 };
 let getGameAccountLoginInfo=function(query_serial,svcCode,svcRegion,accName,accSerial){
+	otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
+	otp.childNodes[1].ra(1).ac(q.ce("div").at("loading ... "));
 	jurl(hostAt+"beanfun_block/game_zone/game_start_step2.aspx?service_code="+svcCode+"&service_region="+svcRegion+"&sotp="+accSerial,"GET","",function(txt){
 		if(query_serial!=infoQSerial){ console.log("conflict: info"); return; }
 		let fail=0,SN="",WebToken="",CreateTime="";
@@ -338,8 +340,7 @@ let getGameAccountLoginInfo=function(query_serial,svcCode,svcRegion,accName,accS
 		}
 		if(fail!=0) console.log(SN,WebToken,m_strSecretCode,CreateTime);
 		else{
-			otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
-			otp.childNodes[1].ra(1).ac(q.ce("div").at("loading ... "));
+			otp.childNodes[1].ra(1).ac(q.ce("div").at("calculating ..."));
 			jurl(hostAt+"beanfun_block/generic_handlers/get_webstart_otp.ashx"+
 					"?SN="+SN+
 					"&WebToken="+ WebToken +
@@ -353,7 +354,7 @@ let getGameAccountLoginInfo=function(query_serial,svcCode,svcRegion,accName,accS
 					if(txt.slice(0,1)!="1") console.log(txt);
 					else{
 						// otp.childNodes[0].ra(1).ac(q.ce("div").at(accName));
-						otp.childNodes[1].ra(1).ac(q.ce("div").at("calculating ..."));
+						// otp.childNodes[1].ra(1).ac(q.ce("div").at("calculating ..."));
 						let otpCode=desDecrypt(txt.slice(2));
 						otp.childNodes[1].ra(1).ac(q.ce("div").at(otpCode));
 					}
