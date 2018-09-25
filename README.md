@@ -1,4 +1,4 @@
-# Beanfun Game Account OneTimePassword ver. web
+# Beanfun Game Account OneTimePassword ver. webONLY
 
 [source](https://aaaaagold.github.io/bfGameAccountOtp/main.js)
 
