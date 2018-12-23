@@ -68,7 +68,7 @@ let genBlock=function genBlock(){
 	svc.ac(q.ce("div").ac( acc=q.ce("div").sa("id","accs1").ac(q.ce("div").at("accounts:")) ));
 };
 let clearCurrent=function clearCurrent(){
-	d.write('.');
+	// d.write('.');
 	d.head.innerHTML="";
 	if(q.ge("bfMinLoginCss")==null){
 		let css=q.ce("style").sa("id","bfMinLoginCss");
@@ -92,6 +92,11 @@ let clearCurrent=function clearCurrent(){
 		// contents
 		css.at(".svc>div>div>div{margin:11px;border-left:11px solid rgba(255,255,255,0.5);padding:0px 0px 0px 11px;}");
 		css.at(".svc>div>div>div:hover{background-color:rgba(255,255,255,0.5);}");
+		// contents-btn // create , reload
+		css.at(".svc>div>div>div>div{position:relative;width:100%;}");
+		css.at(".svc>div>div>div>div>div{position:relative;display:inline-block;width:50%;margin:0px 0px 11px 0px;text-align:center;}");
+		css.at(".svc>div>div>div>div>div>div{position:relative;display:block;margin:0px 11px 0px 0px;background-color:rgba(111,111,0,0.75);border:1px solid rgba(0,0,0,0);text-align:center;}");
+		css.at(".svc>div>div>div>div>div>div:hover{background-color:rgba(255,255,0,0.5);border:1px solid white;}");
 		d.head.ac(css);
 		console.log("css added");
 	}
@@ -363,7 +368,7 @@ let getGameAccountLoginInfo=function(query_serial,svcCode,svcRegion,accName,accS
 	});
 
 };
-let loadAccoutns=function core(query_serial,gameId){
+let loadAccounts=function core(query_serial,gameId){
 	acc.ra(1);
 	acc.ac(q.ce("div").at("loading ..."));
 	if(core.getAccounts==undefined){
@@ -390,6 +395,42 @@ let loadAccoutns=function core(query_serial,gameId){
 		core.getAccounts(query_serial,gameId);
 	});
 };
+let createAccount=function createAccount(servId){
+	let nickname=prompt("Type in a nickname for your new account or click cancel.");
+	if(nickname===null) return;
+	let svc=servId.split("_");
+	let rtv=new FormData();
+	rtv.append("strFunction","AddServiceAccount");
+	rtv.append("npsc","");
+	rtv.append("npsr","");
+	rtv.append("sc",svc[0]);
+	rtv.append("sr",svc[1]);
+	rtv.append("sadn",nickname);
+	rtv.append("sag","");
+	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{
+		let res=JSON.parse(txt);
+		let rtv=res["intResult"];
+		let info="";
+		switch(rtv)
+		{
+		default:
+			info+="unknown";
+			break;
+		case 0:
+			info+="fail";
+			break;
+		case 1:
+			info+="success";
+			break;
+		}
+		let moreinfo=res["strOutstring"];
+		if((moreinfo!==undefined)&(moreinfo!=="")){
+			info+=": ";
+			info+=res["strOutstring"];
+		}
+		alert(info);
+	});
+};
 let loadGames=function loadGames(){
 	game.ra(1);
 	game.ac(q.ce("div").at("loading ..."));
@@ -402,9 +443,15 @@ let loadGames=function loadGames(){
 		game.ra(1);
 		let arr=JSON.parse(txt)["strServices"].split(",");
 		for(let x=arr.length;x--;){
-			let div=q.ce("div").at(arr[x]);
-			div.onclick=function(){loadAccoutns(accQSerial+=1,arr[x]);};
-			game.ac(div);
+			let servId=arr[x];
+			let servBlk=q.ce("div");
+			let serv_name=q.ce("div").at(servId);
+			let serv_create=q.ce("div").ac(q.ce("div").at("create"));
+				serv_create.onclick=function(){createAccount(servId);};
+			let serv_reload=q.ce("div").ac(q.ce("div").at("reload"));
+				serv_reload.onclick=function(){loadAccounts(accQSerial+=1,servId);};
+			servBlk.ac(serv_name).ac(q.ce("div").ac(serv_create).ac(serv_reload));
+			game.ac(servBlk);
 		}
 	});
 };
