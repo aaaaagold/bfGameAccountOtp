@@ -42,10 +42,15 @@ let jurl=function jurl(url,method,data,callback){
 },hostAt="https://tw.beanfun.com/";
 let rt,otp,svc,game,acc; // DOM
 let webToken=(function(){
-	let re=/(^|(;\s))bfWebToken=([0-9A-Fa-f]*)((;\s)|$)/g;
-	let m=d.cookie.match(re);
-	if(m==null) return null;
-	return m[0].replace(re,"$3");
+	return (BeanFunBlock&&BeanFunBlock.LoggedInUserData&&BeanFunBlock.LoggedInUserData.WebToken)?BeanFunBlock.LoggedInUserData.WebToken:null;
+	if(0){
+		// old version
+		let re=/(^|(;\s))bfWebToken=([0-9A-Fa-f]*)((;\s)|$)/g;
+		let m=d.cookie.match(re);
+		if(m==null) return null;
+		return m[0].replace(re,"$3");
+	}
+	return null; // make sure the the next-2 line works right.
 })(); // get cookie
 if(webToken==null){
 	alert("Unable to get cookie: bfWebToken. Perhaps:\n 1. you are not login at web page\n 2. cookie name is changed, you need to update the script by yourself.\n 3. unknown problems.");
