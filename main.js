@@ -77,8 +77,8 @@ let genBlock=function genBlock(){
 		if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_show; dynamicCss["unusedServ"].unset(); }
 		else{ this.stat="H"; showAllBtn.childNodes[0].data=this.str_hide; dynamicCss["unusedServ"].set(); }
 	};
-	showAllBtn.childNodes[0].data="unused";
 	unusedServShowAll.switch(); // to .stat=="H"
+	showAllBtn.childNodes[0].data="unused";
 	unusedServShowAll.onclick=unusedServShowAll.switch;
 	svc.ac(q.ce("div").ac( game=q.ce("div").sa("id","games1").ac(q.ce("div").at("games:").ac(unusedServShowAll)) ));
 	svc.ac(q.ce("div").ac( acc=q.ce("div").sa("id","accs1").ac(q.ce("div").at("accounts:")) ));
