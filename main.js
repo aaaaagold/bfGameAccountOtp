@@ -465,8 +465,8 @@ let loadGameMetaAll=function _loadGameMetaAll(){
 let loadGames=function _loadGames(){
 	if( _loadGames.putData ==undefined){ _loadGames.putData =function _putData(txt){
 		game.ra(1);
-		//let arr=JSON.parse(txt)["strServices"].split(",");
-		let arr=["610074_T9"];
+		let arr=JSON.parse(txt)["strServices"].split(",");
+		//let arr=["610074_T9"]; // test
 		for(let x=arr.length;x--;){
 			let servId=arr[x];
 			let servBlk=q.ce("div");
