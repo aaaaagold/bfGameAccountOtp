@@ -40,7 +40,7 @@ let jurl=function jurl(url,method,data,callback){
 	xhttp.open(method,url,true);
 	xhttp.send(method==="GET"?undefined:data);
 },hostAt="https://tw.beanfun.com/";
-let rt,otp,svc,game,acc; // DOM
+let rt,otp,svc,game,acc,dynamicCss={}; // DOM
 let webToken=(function(){
 	return (BeanFunBlock&&BeanFunBlock.LoggedInUserData&&BeanFunBlock.LoggedInUserData.WebToken)?BeanFunBlock.LoggedInUserData.WebToken:null;
 	if(0){
@@ -69,7 +69,18 @@ let genBlock=function genBlock(){
 	);
 	svc=q.ce("div").sa("class","svc");
 	d.body.ac(rt.ac(svc));
-	svc.ac(q.ce("div").ac( game=q.ce("div").sa("id","games1").ac(q.ce("div").at("games:")) ));
+	let showAllBtn=q.ce("div").at("...");
+	let unusedServShowAll=q.ce("div").ac(q.ce("div").ac(showAllBtn));
+	unusedServShowAll.str_show="show all";
+	unusedServShowAll.str_hide="hide";
+	unusedServShowAll.switch=function(){
+		if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_show; dynamicCss["unusedServ"].unset(); }
+		else{ this.stat="H"; showAllBtn.childNodes[0].data=this.str_hide; dynamicCss["unusedServ"].set(); }
+	};
+	showAllBtn.childNodes[0].data="unused";
+	unusedServShowAll.switch(); // to .stat=="H"
+	unusedServShowAll.onclick=unusedServShowAll.switch;
+	svc.ac(q.ce("div").ac( game=q.ce("div").sa("id","games1").ac(q.ce("div").at("games:").ac(unusedServShowAll)) ));
 	svc.ac(q.ce("div").ac( acc=q.ce("div").sa("id","accs1").ac(q.ce("div").at("accounts:")) ));
 };
 let clearCurrent=function clearCurrent(){
@@ -103,7 +114,16 @@ let clearCurrent=function clearCurrent(){
 		css.at(".svc>div>div>div>div>div>div{position:relative;display:block;margin:0px 11px 0px 0px;background-color:rgba(111,111,0,0.75);border:1px solid rgba(0,0,0,0);text-align:center;}");
 		css.at(".svc>div>div>div>div>div>div:hover{background-color:rgba(255,255,0,0.5);border:1px solid white;}");
 		d.head.ac(css);
-		console.log("css added");
+		console.log("css-bf added");
+		let css_dynamic_unusedServ=q.ce("style").sa("id","dynamicCss-unusedServ");
+		css_dynamic_unusedServ.S=".unusedServ{display:none;}"; // set
+		css_dynamic_unusedServ.U=".unusedServ{}"; // unset
+		css_dynamic_unusedServ.set=function(){this.ra(0).at(this.S);this.stat="S";};
+		css_dynamic_unusedServ.unset=function(){this.ra(0).at(this.U);this.stat="U";};
+		//css_dynamic_unusedServ.set(); // set by showAll in genBlock()
+		d.head.ac(css_dynamic_unusedServ);
+		dynamicCss["unusedServ"]=css_dynamic_unusedServ;
+		console.log("css-dynamic-unusedServ added");
 	}
 	d.body.innerHTML="";
 	d.body.removeAttribute("style");
@@ -401,7 +421,7 @@ let loadAccounts=function core(query_serial,gameId){
 	});
 };
 let createAccount=function _createAccount(servId){
-	if( _createAccount.resp ==undefined){ _createAccount.resp =(txt)=>{
+	if( _createAccount.resp ==undefined){ _createAccount.resp =(txt,servId)=>{
 		let res=JSON.parse(txt);
 		let rtv=res["intResult"];
 		let info="";
@@ -415,6 +435,7 @@ let createAccount=function _createAccount(servId){
 			break;
 		case 1:
 			info+="success";
+			{let arr=game.childNoes; for(let x=arr.length;x--;) if(arr[x].servId===servId) arr[x].sa("class","");}
 			break;
 		}
 		let moreinfo=res["strOutstring"];
@@ -435,9 +456,10 @@ let createAccount=function _createAccount(servId){
 	rtv.append("sr",svc[1]);
 	rtv.append("sadn",nickname);
 	rtv.append("sag","");
-	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,_createAccount.resp);
+	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{_createAccount.resp(txt,servId);});
 };
 let loadGameMetaAll=function _loadGameMetaAll(){
+	if( _loadGameMetaAll.showAllBtn == undefined) _loadGameMetaAll.showAllBtn=game.childNodes[0].childNodes[1].childNodes[0].childNodes[0];
 	if( _loadGameMetaAll.mapping == undefined){ _loadGameMetaAll.mapping =function _mapping(){
 		let tbl=_loadGameMetaAll.tbl,arr=game.childNodes;
 		if(tbl){
@@ -457,26 +479,35 @@ let loadGameMetaAll=function _loadGameMetaAll(){
 			let key=tmp.ServiceCode+"_"+tmp.ServiceRegion;
 			rtv[key]=key+" - "+tmp.ServiceName;
 		}
-		_loadGameMetaAll.tbl=rtv;
+		if( _loadGameMetaAll.tbl ==undefined) _loadGameMetaAll.tbl=rtv;
+		let exists={},arr=game.childNodes;
+		for(let x=arr.length;--x;) exists[arr[x].servId]=0;
+		for(let x in _loadGameMetaAll.tbl) if(!(x in exists)) loadGames.putDataByServId(x,"unusedServ");
+		_loadGameMetaAll.showAllBtn.childNodes[0].data="show all";
 		_loadGameMetaAll.mapping();
 	};}
+	_loadGameMetaAll.showAllBtn.childNodes[0].data="...";
 	if( _loadGameMetaAll.tbl ==undefined) jurl(hostAt+"game_zone/default.aspx","GET",0,_loadGameMetaAll.putTbl);
 };
-let loadGames=function _loadGames(){
+let loadGames=function _loadGames(servIdOth){
+	if( _loadGames.putDataByServId ==undefined){ _loadGames.putDataByServId =function _putDataByServId(servId,domClass){
+		let servBlk=q.ce("div"); servBlk.servId=servId;
+		if(domClass!==undefined) servBlk.sa("class",domClass);
+		let serv_name=q.ce("div").at(servId);
+		let serv_create=q.ce("div").ac(q.ce("div").at("create"));
+			serv_create.onclick=function(){createAccount(servId);};
+		let serv_reload=q.ce("div").ac(q.ce("div").at("reload"));
+			serv_reload.onclick=function(){loadAccounts(accQSerial+=1,servId);};
+		servBlk.ac(serv_name).ac(q.ce("div").ac(serv_create).ac(serv_reload));
+		game.ac(servBlk);
+	};}
 	if( _loadGames.putData ==undefined){ _loadGames.putData =function _putData(txt){
 		game.ra(1);
-		let arr=JSON.parse(txt)["strServices"].split(",");
-		//let arr=["610074_T9"]; // test
-		for(let x=arr.length;x--;){
-			let servId=arr[x];
-			let servBlk=q.ce("div");
-			let serv_name=q.ce("div").at(servId);
-			let serv_create=q.ce("div").ac(q.ce("div").at("create"));
-				serv_create.onclick=function(){createAccount(servId);};
-			let serv_reload=q.ce("div").ac(q.ce("div").at("reload"));
-				serv_reload.onclick=function(){loadAccounts(accQSerial+=1,servId);};
-			servBlk.ac(serv_name).ac(q.ce("div").ac(serv_create).ac(serv_reload));
-			game.ac(servBlk);
+		let arr=JSON.parse(txt)["strServices"];
+		if(arr){
+			arr=arr.split(",");
+			//arr=["610074_T9"]; // test
+			for(let x=arr.length;x--;) _loadGames.putDataByServId(arr[x]);
 		}
 		loadGameMetaAll();
 	};}
