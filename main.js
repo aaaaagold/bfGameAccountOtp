@@ -74,11 +74,11 @@ let genBlock=function genBlock(){
 	unusedServShowAll.str_show="show all";
 	unusedServShowAll.str_hide="hide";
 	unusedServShowAll.switch=function(){
-		if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_show; dynamicCss["unusedServ"].unset(); }
-		else{ this.stat="H"; showAllBtn.childNodes[0].data=this.str_hide; dynamicCss["unusedServ"].set(); }
+		if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_hide; dynamicCss["unusedServ"].unset(); }
+		else{ this.stat="H"; showAllBtn.childNodes[0].data=this.str_show; dynamicCss["unusedServ"].set(); }
 	};
 	unusedServShowAll.switch(); // to .stat=="H"
-	showAllBtn.childNodes[0].data="unused";
+	showAllBtn.childNodes[0].data="unuseds";
 	unusedServShowAll.onclick=unusedServShowAll.switch;
 	svc.ac(q.ce("div").ac( game=q.ce("div").sa("id","games1").ac(q.ce("div").at("games:").ac(unusedServShowAll)) ));
 	svc.ac(q.ce("div").ac( acc=q.ce("div").sa("id","accs1").ac(q.ce("div").at("accounts:")) ));
@@ -483,7 +483,8 @@ let loadGameMetaAll=function _loadGameMetaAll(){
 		let exists={},arr=game.childNodes;
 		for(let x=arr.length;--x;) exists[arr[x].servId]=0;
 		for(let x in _loadGameMetaAll.tbl) if(!(x in exists)) loadGames.putDataByServId(x,"unusedServ");
-		_loadGameMetaAll.showAllBtn.childNodes[0].data="show all";
+		let tmp=_loadGameMetaAll.showAllBtn;
+		tmp.childNodes[0].data=tmp.parentNode.parentNode.str_show;
 		_loadGameMetaAll.mapping();
 	};}
 	_loadGameMetaAll.showAllBtn.childNodes[0].data="...";
