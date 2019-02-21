@@ -98,7 +98,7 @@ let clearCurrent=function clearCurrent(){
 		css.at(".svc>div>div>div{margin:11px;border-left:11px solid rgba(255,255,255,0.5);padding:0px 0px 0px 11px;}");
 		css.at(".svc>div>div>div:hover{background-color:rgba(255,255,255,0.5);}");
 		// contents-btn // create , reload
-		css.at(".svc>div>div>div>div{position:relative;width:100%;}");
+		css.at(".svc>div>div>div>div{position:relative;width:100%;white-space:nowrap;overflow-x:hidden;}");
 		css.at(".svc>div>div>div>div>div{position:relative;display:inline-block;width:50%;margin:0px 0px 11px 0px;text-align:center;}");
 		css.at(".svc>div>div>div>div>div>div{position:relative;display:block;margin:0px 11px 0px 0px;background-color:rgba(111,111,0,0.75);border:1px solid rgba(0,0,0,0);text-align:center;}");
 		css.at(".svc>div>div>div>div>div>div:hover{background-color:rgba(255,255,0,0.5);border:1px solid white;}");
@@ -400,19 +400,8 @@ let loadAccounts=function core(query_serial,gameId){
 		core.getAccounts(query_serial,gameId);
 	});
 };
-let createAccount=function createAccount(servId){
-	let nickname=prompt("Type in a nickname for your new account or click cancel.");
-	if(nickname===null) return;
-	let svc=servId.split("_");
-	let rtv=new FormData();
-	rtv.append("strFunction","AddServiceAccount");
-	rtv.append("npsc","");
-	rtv.append("npsr","");
-	rtv.append("sc",svc[0]);
-	rtv.append("sr",svc[1]);
-	rtv.append("sadn",nickname);
-	rtv.append("sag","");
-	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{
+let createAccount=function _createAccount(servId){
+	if( _createAccount.resp ==undefined){ _createAccount.resp =(txt)=>{
 		let res=JSON.parse(txt);
 		let rtv=res["intResult"];
 		let info="";
@@ -434,19 +423,50 @@ let createAccount=function createAccount(servId){
 			info+=res["strOutstring"];
 		}
 		alert(info);
-	});
+	};}
+	let nickname=prompt("Type in a nickname for your new account or click cancel.");
+	if(nickname===null) return;
+	let svc=servId.split("_");
+	let rtv=new FormData();
+	rtv.append("strFunction","AddServiceAccount");
+	rtv.append("npsc","");
+	rtv.append("npsr","");
+	rtv.append("sc",svc[0]);
+	rtv.append("sr",svc[1]);
+	rtv.append("sadn",nickname);
+	rtv.append("sag","");
+	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,_createAccount.resp);
 };
-let loadGames=function loadGames(){
-	game.ra(1);
-	game.ac(q.ce("div").at("loading ..."));
-	jurl(hostAt+"generic_handlers/gamezone.ashx","POST",(function(){
-		let rtv=new FormData();
-		rtv.append("strFunction","getOpenedServices");
-		rtv.append("webtoken","1");
-		return rtv;
-	})(),function(txt){
+let loadGameMetaAll=function _loadGameMetaAll(){
+	if( _loadGameMetaAll.mapping == undefined){ _loadGameMetaAll.mapping =function _mapping(){
+		let tbl=_loadGameMetaAll.tbl,arr=game.childNodes;
+		if(tbl){
+			for(let x=arr.length;--x;){
+				let tmp=arr[x].childNodes[0].childNodes[0];
+				let t=tbl[tmp.data];
+				if(t) tmp.data=t;
+			}
+		}else return 1;
+	};}
+	if( _loadGameMetaAll.putTbl == undefined){ _loadGameMetaAll.putTbl =function _putTbl(txt,div){
+		let strt=txt.indexOf("Services.ServiceList");
+		let games=JSON.parse(txt.slice(txt.indexOf("=",strt)+1,txt.indexOf(";",strt)))["Rows"];
+		let rtv={};
+		for(let x=games.length;x--;){
+			let tmp=games[x];
+			let key=tmp.ServiceCode+"_"+tmp.ServiceRegion;
+			rtv[key]=key+" - "+tmp.ServiceName;
+		}
+		_loadGameMetaAll.tbl=rtv;
+		_loadGameMetaAll.mapping();
+	};}
+	if( _loadGameMetaAll.tbl ==undefined) jurl(hostAt+"game_zone/default.aspx","GET",0,_loadGameMetaAll.putTbl);
+};
+let loadGames=function _loadGames(){
+	if( _loadGames.putData ==undefined){ _loadGames.putData =function _putData(txt){
 		game.ra(1);
-		let arr=JSON.parse(txt)["strServices"].split(",");
+		//let arr=JSON.parse(txt)["strServices"].split(",");
+		let arr=["610074_T9"];
 		for(let x=arr.length;x--;){
 			let servId=arr[x];
 			let servBlk=q.ce("div");
@@ -458,7 +478,16 @@ let loadGames=function loadGames(){
 			servBlk.ac(serv_name).ac(q.ce("div").ac(serv_create).ac(serv_reload));
 			game.ac(servBlk);
 		}
-	});
+		loadGameMetaAll();
+	};}
+	game.ra(1);
+	game.ac(q.ce("div").at("loading ..."));
+	jurl(hostAt+"generic_handlers/gamezone.ashx","POST",(function(){
+		let rtv=new FormData();
+		rtv.append("strFunction","getOpenedServices");
+		rtv.append("webtoken","1");
+		return rtv;
+	})(),_loadGames.putData);
 };
 
 q.ce=function(h){return d.createElement(h);};
