@@ -421,7 +421,7 @@ let loadAccounts=function core(query_serial,gameId){
 	});
 };
 let createAccount=function _createAccount(servId){
-	if( _createAccount.resp ==undefined){ _createAccount.resp =function(txt,servId){
+	if( _createAccount.resp ==undefined){ _createAccount.resp =(txt,servId,game)=>{
 		let res=JSON.parse(txt);
 		let rtv=res["intResult"];
 		let info="";
@@ -456,7 +456,7 @@ let createAccount=function _createAccount(servId){
 	rtv.append("sr",svc[1]);
 	rtv.append("sadn",nickname);
 	rtv.append("sag","");
-	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{_createAccount.resp(txt,servId);});
+	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{_createAccount.resp(txt,servId,game);});
 };
 let loadGameMetaAll=function _loadGameMetaAll(){
 	if( _loadGameMetaAll.showAllBtn == undefined) _loadGameMetaAll.showAllBtn=game.childNodes[0].childNodes[1].childNodes[0].childNodes[0];
