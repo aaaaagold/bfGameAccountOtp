@@ -456,7 +456,8 @@ let createAccount=function _createAccount(servId){
 	rtv.append("sr",svc[1]);
 	rtv.append("sadn",nickname);
 	rtv.append("sag","");
-	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{_createAccount.resp(txt,servId,game);});
+	let gameDom=game;
+	jurl("https://tw.beanfun.com/generic_handlers/gamezone.ashx","POST",rtv,(txt)=>{_createAccount.resp(txt,servId,gameDom);});
 };
 let loadGameMetaAll=function _loadGameMetaAll(){
 	if( _loadGameMetaAll.showAllBtn == undefined) _loadGameMetaAll.showAllBtn=game.childNodes[0].childNodes[1].childNodes[0].childNodes[0];
