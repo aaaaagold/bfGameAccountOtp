@@ -421,7 +421,7 @@ let loadAccounts=function core(query_serial,gameId){
 	});
 };
 let createAccount=function _createAccount(servId){
-	if( _createAccount.resp ==undefined){ _createAccount.resp =(txt,servId)=>{
+	if( _createAccount.resp ==undefined){ _createAccount.resp =function(txt,servId){
 		let res=JSON.parse(txt);
 		let rtv=res["intResult"];
 		let info="";
