@@ -460,7 +460,7 @@ let createAccount=function _createAccount(servId){
 };
 let loadGameMetaAll=function _loadGameMetaAll(){
 	if( _loadGameMetaAll.showAllBtn == undefined) _loadGameMetaAll.showAllBtn=game.childNodes[0].childNodes[1].childNodes[0].childNodes[0];
-	if( _loadGameMetaAll.mapping == undefined){ _loadGameMetaAll.mapping =function _mapping(){
+	if( _loadGameMetaAll.mapping == undefined){ _loadGameMetaAll.mapping =function _mapping(){ // add readable name
 		let tbl=_loadGameMetaAll.tbl,arr=game.childNodes;
 		if(tbl){
 			for(let x=arr.length;--x;){
@@ -480,11 +480,15 @@ let loadGameMetaAll=function _loadGameMetaAll(){
 			rtv[key]=key+" - "+tmp.ServiceName;
 		}
 		if( _loadGameMetaAll.tbl ==undefined) _loadGameMetaAll.tbl=rtv;
+		// put unused servs
 		let exists={},arr=game.childNodes;
 		for(let x=arr.length;--x;) exists[arr[x].servId]=0;
-		for(let x in _loadGameMetaAll.tbl) if(!(x in exists)) loadGames.putDataByServId(x,"unusedServ");
+		let ids=[]; for(let id in _loadGameMetaAll.tbl) if(!(id in exists)) ids.push(id);
+		ids.sort(); for(let x=0,xs=ids.length;x<xs;++x) loadGames.putDataByServId(ids[x],"unusedServ");
+		// arrange text in showAllBtn to indicate that unuseds is available
 		let tmp=_loadGameMetaAll.showAllBtn;
-		tmp.childNodes[0].data=tmp.parentNode.parentNode.str_show;
+		_loadGameMetaAll.showAllBtn.childNodes[0].data=tmp.parentNode.parentNode.str_show;
+		// 
 		_loadGameMetaAll.mapping();
 	};}
 	_loadGameMetaAll.showAllBtn.childNodes[0].data="...";
