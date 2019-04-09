@@ -71,15 +71,16 @@ let genBlock=function genBlock(){
 	d.body.ac(rt.ac(svc));
 	let showAllBtn=q.ce("div").at("...");
 	let unusedServShowAll=q.ce("div").ac(q.ce("div").ac(showAllBtn));
-	unusedServShowAll.str_show="show all";
-	unusedServShowAll.str_hide="hide";
-	unusedServShowAll.switch=function(){
-		if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_hide; dynamicCss["unusedServ"].unset(); }
-		else{ this.stat="H"; showAllBtn.childNodes[0].data=this.str_show; dynamicCss["unusedServ"].set(); }
+	unusedServShowAll.str_show="now:showAll";
+	unusedServShowAll.str_hide="now:hideOth";
+	unusedServShowAll._switch=function(){
+		if(!this.stat){ this.stat="H"; if(!showAllBtn.loading){ showAllBtn.loading=1; loadGameMetaAll(); } }
+		else if(this.stat=="H"){ this.stat="S"; showAllBtn.childNodes[0].data=this.str_show+(showAllBtn.loading?" (loading...)":""); dynamicCss["unusedServ"].unset(); }
+		else if(this.stat=="S"){ this.stat="H"; showAllBtn.childNodes[0].data=this.str_hide+(showAllBtn.loading?" (loading...)":""); dynamicCss["unusedServ"].set(); }
 	};
-	unusedServShowAll.switch(); // to .stat=="H"
-	showAllBtn.childNodes[0].data="unuseds";
-	unusedServShowAll.onclick=unusedServShowAll.switch;
+	{ let t=unusedServShowAll; t.stat="S"; t._switch(); t.stat=""; } // content state == "H"
+	showAllBtn.childNodes[0].data="load meta";
+	unusedServShowAll.onclick=unusedServShowAll._switch;
 	svc.ac(q.ce("div").ac( game=q.ce("div").sa("id","games1").ac(q.ce("div").at("games:").ac(unusedServShowAll)) ));
 	svc.ac(q.ce("div").ac( acc=q.ce("div").sa("id","accs1").ac(q.ce("div").at("accounts:")) ));
 };
@@ -487,12 +488,12 @@ let loadGameMetaAll=function _loadGameMetaAll(){
 		ids.sort(); for(let x=0,xs=ids.length;x<xs;++x) loadGames.putDataByServId(ids[x],"unusedServ");
 		// arrange text in showAllBtn to indicate that unuseds is available
 		let tmp=_loadGameMetaAll.showAllBtn;
-		_loadGameMetaAll.showAllBtn.childNodes[0].data=tmp.parentNode.parentNode.str_show;
+		tmp.loading=0; tmp=tmp.parentNode.parentNode; tmp._switch(); tmp._switch();
 		// 
 		_loadGameMetaAll.mapping();
 	};}
-	_loadGameMetaAll.showAllBtn.childNodes[0].data="...";
-	if( _loadGameMetaAll.tbl ==undefined) jurl(hostAt+"game_zone/default.aspx","GET",0,_loadGameMetaAll.putTbl);
+	_loadGameMetaAll.showAllBtn.childNodes[0].data="loading...";
+	if( _loadGameMetaAll.showAllBtn.loading=(_loadGameMetaAll.tbl ==undefined) ) jurl(hostAt+"game_zone/default.aspx","GET",0,_loadGameMetaAll.putTbl);
 };
 let loadGames=function _loadGames(servIdOth){
 	if( _loadGames.putDataByServId ==undefined){ _loadGames.putDataByServId =function _putDataByServId(servId,domClass){
@@ -514,7 +515,7 @@ let loadGames=function _loadGames(servIdOth){
 			//arr=["610074_T9"]; // test
 			for(let x=arr.length;x--;) _loadGames.putDataByServId(arr[x]);
 		}
-		loadGameMetaAll();
+		//loadGameMetaAll(); // let first time be active by user. to prevent slow loading of game accounts.
 	};}
 	game.ra(1);
 	game.ac(q.ce("div").at("loading ..."));
