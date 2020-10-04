@@ -26,5 +26,5 @@ to bookmarks, if your browser support
 [here (from creating a game account to login)](https://youtu.be/xNCkZsYPkMQ)  
 [![demo - creation to login](https://img.youtube.com/vi/xNCkZsYPkMQ/0.jpg)](https://youtu.be/xNCkZsYPkMQ)
 
-[here (from bookmark to login)](https://youtu.be/5Cat5kjahdU)  
+[here (old UI, from bookmark to login)](https://youtu.be/5Cat5kjahdU)  
 [![demo - bookmark to login](https://img.youtube.com/vi/5Cat5kjahdU/0.jpg)](https://youtu.be/5Cat5kjahdU)
